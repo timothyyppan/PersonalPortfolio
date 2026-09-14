@@ -1815,7 +1815,6 @@ A flag on a green, in the site's own ink and gold.
 // app/opengraph-image.tsx
 import { ImageResponse } from 'next/og';
 
-export const runtime = 'edge';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 export const alt = 'Timothy Pan — engineer, builder, golfer';
@@ -1877,7 +1876,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 - [ ] **Step 6: Verify the build**
 
 Run: `npm run build`
-Expected: succeeds, and the output lists `/sitemap.xml` and `/opengraph-image` as generated routes.
+Expected: succeeds, and the output lists `/sitemap.xml` and `/opengraph-image` as generated routes marked `○` (static) — no `runtime = 'edge'` export, since the image has no per-request data and static generation is strictly cheaper here.
 
 - [ ] **Step 7: Commit**
 
