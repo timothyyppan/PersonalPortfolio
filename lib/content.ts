@@ -56,20 +56,29 @@ export function getEntry(
   const filePath = path.join(collectionDir(collection, root), safeSlug, 'index.mdx');
   if (!fs.existsSync(filePath)) return null;
 
-  const { data, content } = matter(fs.readFileSync(filePath, 'utf-8'));
+  try {
+    const { data, content } = matter(fs.readFileSync(filePath, 'utf-8'));
 
-  return {
-    collection,
-    slug: safeSlug,
-    title: data.title,
-    tags: data.tags ?? [],
-    startDate: data.startDate,
-    endDate: data.endDate,
-    status: data.status,
-    hook: data.hook,
-    org: data.org,
-    role: data.role,
-    location: data.location,
-    content,
-  };
+    if (!data.title || !data.startDate || !data.status || !data.hook) {
+      throw new Error('missing required frontmatter (title, startDate, status, or hook)');
+    }
+
+    return {
+      collection,
+      slug: safeSlug,
+      title: data.title,
+      tags: data.tags ?? [],
+      startDate: data.startDate,
+      endDate: data.endDate,
+      status: data.status,
+      hook: data.hook,
+      org: data.org,
+      role: data.role,
+      location: data.location,
+      content,
+    };
+  } catch (error) {
+    console.error(`Skipping ${collection}/${safeSlug}: ${(error as Error).message}`);
+    return null;
+  }
 }

@@ -64,4 +64,26 @@ describe('getEntry', () => {
   it('returns null rather than throwing for an invalid slug', () => {
     expect(getEntry('projects', '../escape', root)).toBeNull();
   });
+
+  it('returns null rather than throwing on malformed YAML frontmatter', () => {
+    const dir = path.join(root, 'projects', 'broken');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'index.mdx'), '---\ntitle: [unterminated\n---\n\nBody\n', 'utf-8');
+
+    expect(getEntry('projects', 'broken', root)).toBeNull();
+  });
+
+  it('returns null rather than throwing when a required field is missing', () => {
+    writeEntry('projects', 'incomplete', 'tags: []\nstartDate: "2025-01-01"\nstatus: complete\nhook: h', '## Overview\n\nNo title');
+    expect(getEntry('projects', 'incomplete', root)).toBeNull();
+  });
+});
+
+describe('getEntries with a broken entry present', () => {
+  it('skips the broken entry and still returns the valid ones', () => {
+    writeEntry('projects', 'good', 'title: Good\ntags: []\nstartDate: "2025-01-01"\nstatus: complete\nhook: h', '## Overview\n\nFine');
+    writeEntry('projects', 'incomplete', 'tags: []\nstartDate: "2025-01-01"\nstatus: complete\nhook: h', '## Overview\n\nNo title');
+
+    expect(getEntries('projects', root).map((e) => e.slug)).toEqual(['good']);
+  });
 });

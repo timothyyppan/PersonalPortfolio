@@ -552,8 +552,32 @@ describe('getEntry', () => {
   it('returns null rather than throwing for an invalid slug', () => {
     expect(getEntry('projects', '../escape', root)).toBeNull();
   });
+
+  it('returns null rather than throwing on malformed YAML frontmatter', () => {
+    const dir = path.join(root, 'projects', 'broken');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, 'index.mdx'), '---\ntitle: [unterminated\n---\n\nBody\n', 'utf-8');
+
+    expect(getEntry('projects', 'broken', root)).toBeNull();
+  });
+
+  it('returns null rather than throwing when a required field is missing', () => {
+    writeEntry('projects', 'incomplete', 'tags: []\nstartDate: "2025-01-01"\nstatus: complete\nhook: h', '## Overview\n\nNo title');
+    expect(getEntry('projects', 'incomplete', root)).toBeNull();
+  });
+});
+
+describe('getEntries with a broken entry present', () => {
+  it('skips the broken entry and still returns the valid ones', () => {
+    writeEntry('projects', 'good', 'title: Good\ntags: []\nstartDate: "2025-01-01"\nstatus: complete\nhook: h', '## Overview\n\nFine');
+    writeEntry('projects', 'incomplete', 'tags: []\nstartDate: "2025-01-01"\nstatus: complete\nhook: h', '## Overview\n\nNo title');
+
+    expect(getEntries('projects', root).map((e) => e.slug)).toEqual(['good']);
+  });
 });
 ```
+
+A single hand-edited MDX file with broken YAML or a missing required field must not crash the whole collection listing — `getEntry` catches parse/validation errors, logs which slug was skipped, and returns `null`, which `getEntries` already filters out.
 
 - [ ] **Step 2: Run to verify it fails**
 
@@ -622,29 +646,40 @@ export function getEntry(
   const filePath = path.join(collectionDir(collection, root), safeSlug, 'index.mdx');
   if (!fs.existsSync(filePath)) return null;
 
-  const { data, content } = matter(fs.readFileSync(filePath, 'utf-8'));
+  try {
+    const { data, content } = matter(fs.readFileSync(filePath, 'utf-8'));
 
-  return {
-    collection,
-    slug: safeSlug,
-    title: data.title,
-    tags: data.tags ?? [],
-    startDate: data.startDate,
-    endDate: data.endDate,
-    status: data.status,
-    hook: data.hook,
-    org: data.org,
-    role: data.role,
-    location: data.location,
-    content,
-  };
+    if (!data.title || !data.startDate || !data.status || !data.hook) {
+      throw new Error('missing required frontmatter (title, startDate, status, or hook)');
+    }
+
+    return {
+      collection,
+      slug: safeSlug,
+      title: data.title,
+      tags: data.tags ?? [],
+      startDate: data.startDate,
+      endDate: data.endDate,
+      status: data.status,
+      hook: data.hook,
+      org: data.org,
+      role: data.role,
+      location: data.location,
+      content,
+    };
+  } catch (error) {
+    console.error(`Skipping ${collection}/${safeSlug}: ${(error as Error).message}`);
+    return null;
+  }
 }
 ```
+
+A malformed YAML block or a missing required field must degrade to skipping that one entry, not crashing `getEntries`'s `.sort()` on an undefined `startDate` for the whole collection.
 
 - [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run lib/content.test.ts`
-Expected: PASS (7 tests)
+Expected: PASS (10 tests)
 
 - [ ] **Step 5: Commit**
 
@@ -2868,7 +2903,7 @@ git commit -m "Add admin dashboard and edit pages for both collections"
 - [ ] **Step 1: Run the full suite**
 
 Run: `npm run test`
-Expected: all pass — `devGuard` (2), `collections` (8), `format` (5), `content` (7), `entries` (14), `Scorecard` (6), `EntryForm` (5), `AdminDashboard` (5). 52 tests.
+Expected: all pass — `devGuard` (2), `collections` (8), `format` (5), `content` (10), `entries` (14), `Scorecard` (6), `EntryForm` (5), `AdminDashboard` (5). 55 tests.
 
 - [ ] **Step 2: Lint and typecheck**
 
