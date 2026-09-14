@@ -3,6 +3,12 @@ import { COLLECTIONS, type CollectionKey } from '@/lib/collections';
 import { formatPlayed } from '@/lib/format';
 import type { Entry } from '@/lib/content';
 
+// Full literal class names (Tailwind's JIT scanner needs the complete, unbroken string
+// somewhere in the file -- interpolating pieces of a class name defeats detection). Shared
+// between the header row and each entry row so the two can't drift out of column alignment.
+const HEADER_GRID = 'grid-cols-[3rem_1fr_11rem_5rem_3rem]';
+const ROW_GRID = 'sm:grid-cols-[3rem_1fr_11rem_5rem_3rem]';
+
 function ScoreMark({ status }: { status: Entry['status'] }) {
   const complete = status === 'complete';
   return (
@@ -45,7 +51,7 @@ export function Scorecard({
         </p>
       ) : (
         <>
-          <div className="hidden grid-cols-[3rem_1fr_11rem_5rem_3rem] gap-2 border-b border-rule px-4 py-2 font-mono text-[0.7rem] text-inkSoft sm:grid">
+          <div className={`hidden ${HEADER_GRID} gap-2 border-b border-rule px-4 py-2 font-mono text-[0.7rem] text-inkSoft sm:grid`}>
             <span>HOLE</span>
             <span>{config.itemHeader}</span>
             <span>CLUBS</span>
@@ -58,7 +64,8 @@ export function Scorecard({
               <li key={entry.slug} className="border-b border-ruleSoft last:border-b-0">
                 <Link
                   href={`/${collection}/${entry.slug}`}
-                  className="grid grid-cols-1 gap-1 px-4 py-4 hover:bg-card sm:grid-cols-[3rem_1fr_11rem_5rem_3rem] sm:items-baseline sm:gap-2"
+                  aria-label={`${entry.title}, ${formatPlayed(entry.startDate, entry.endDate, entry.status)}, ${entry.status === 'complete' ? 'complete' : 'in progress'}`}
+                  className={`grid grid-cols-1 gap-1 px-4 py-4 hover:bg-card ${ROW_GRID} sm:items-baseline sm:gap-2`}
                 >
                   <span className="font-mono text-xs text-inkSoft">
                     {String(index + 1).padStart(2, '0')}

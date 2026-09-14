@@ -67,4 +67,10 @@ describe('Scorecard', () => {
     render(<Scorecard collection="projects" entries={[]} />);
     expect(screen.getByText(/No projects on the card yet/i)).toBeInTheDocument();
   });
+
+  it('gives each row link a concise accessible name instead of its full visible content', () => {
+    render(<Scorecard collection="projects" entries={entries} />);
+    const link = screen.getByRole('link', { name: /ASIC Math Accelerator Unit/ });
+    expect(link).toHaveAccessibleName('ASIC Math Accelerator Unit, 2024, complete');
+  });
 });

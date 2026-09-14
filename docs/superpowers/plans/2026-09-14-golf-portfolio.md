@@ -1280,8 +1280,16 @@ describe('Scorecard', () => {
     render(<Scorecard collection="projects" entries={[]} />);
     expect(screen.getByText(/No projects on the card yet/i)).toBeInTheDocument();
   });
+
+  it('gives each row link a concise accessible name instead of its full visible content', () => {
+    render(<Scorecard collection="projects" entries={entries} />);
+    const link = screen.getByRole('link', { name: /ASIC Math Accelerator Unit/ });
+    expect(link).toHaveAccessibleName('ASIC Math Accelerator Unit, 2024, complete');
+  });
 });
 ```
+
+Without an explicit `aria-label`, the whole row being one `<Link>` means its accessible name is the concatenation of everything inside it — hole number, title, hook text, every tag, the played span, and the status mark's own label — read as one run-on string by a screen reader. The `aria-label` above overrides that with a short, deliberate name.
 
 - [ ] **Step 2: Run to verify it fails**
 
@@ -1298,6 +1306,12 @@ import Link from 'next/link';
 import { COLLECTIONS, type CollectionKey } from '@/lib/collections';
 import { formatPlayed } from '@/lib/format';
 import type { Entry } from '@/lib/content';
+
+// Full literal class names (Tailwind's JIT scanner needs the complete, unbroken string
+// somewhere in the file -- interpolating pieces of a class name defeats detection). Shared
+// between the header row and each entry row so the two can't drift out of column alignment.
+const HEADER_GRID = 'grid-cols-[3rem_1fr_11rem_5rem_3rem]';
+const ROW_GRID = 'sm:grid-cols-[3rem_1fr_11rem_5rem_3rem]';
 
 function ScoreMark({ status }: { status: Entry['status'] }) {
   const complete = status === 'complete';
@@ -1341,7 +1355,7 @@ export function Scorecard({
         </p>
       ) : (
         <>
-          <div className="hidden grid-cols-[3rem_1fr_11rem_5rem_3rem] gap-2 border-b border-rule px-4 py-2 font-mono text-[0.7rem] text-inkSoft sm:grid">
+          <div className={`hidden ${HEADER_GRID} gap-2 border-b border-rule px-4 py-2 font-mono text-[0.7rem] text-inkSoft sm:grid`}>
             <span>HOLE</span>
             <span>{config.itemHeader}</span>
             <span>CLUBS</span>
@@ -1354,7 +1368,8 @@ export function Scorecard({
               <li key={entry.slug} className="border-b border-ruleSoft last:border-b-0">
                 <Link
                   href={`/${collection}/${entry.slug}`}
-                  className="grid grid-cols-1 gap-1 px-4 py-4 hover:bg-card sm:grid-cols-[3rem_1fr_11rem_5rem_3rem] sm:items-baseline sm:gap-2"
+                  aria-label={`${entry.title}, ${formatPlayed(entry.startDate, entry.endDate, entry.status)}, ${entry.status === 'complete' ? 'complete' : 'in progress'}`}
+                  className={`grid grid-cols-1 gap-1 px-4 py-4 hover:bg-card ${ROW_GRID} sm:items-baseline sm:gap-2`}
                 >
                   <span className="font-mono text-xs text-inkSoft">
                     {String(index + 1).padStart(2, '0')}
@@ -1397,7 +1412,7 @@ export function Scorecard({
 - [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run components/Scorecard.test.tsx`
-Expected: PASS (6 tests)
+Expected: PASS (7 tests)
 
 - [ ] **Step 5: Commit**
 
@@ -2928,7 +2943,7 @@ git commit -m "Add admin dashboard and edit pages for both collections"
 - [ ] **Step 1: Run the full suite**
 
 Run: `npm run test`
-Expected: all pass — `devGuard` (2), `collections` (8), `format` (5), `content` (10), `entries` (15), `Scorecard` (6), `EntryForm` (5), `AdminDashboard` (5). 56 tests.
+Expected: all pass — `devGuard` (2), `collections` (8), `format` (5), `content` (10), `entries` (15), `Scorecard` (7), `EntryForm` (5), `AdminDashboard` (5). 57 tests.
 
 - [ ] **Step 2: Lint and typecheck**
 
