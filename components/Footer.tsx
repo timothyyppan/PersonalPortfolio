@@ -1,4 +1,3 @@
-// components/Footer.tsx
 export function Footer() {
   return (
     <footer className="mt-20 border-t border-rule">
