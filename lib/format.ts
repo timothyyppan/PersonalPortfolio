@@ -5,9 +5,8 @@ export function formatPlayed(
 ): string {
   const startYear = startDate.slice(0, 4);
 
-  if (!endDate) {
-    return status === 'in-progress' ? `${startYear}–` : startYear;
-  }
+  if (status === 'in-progress') return `${startYear}–`;
+  if (!endDate) return startYear;
 
   const endYear = endDate.slice(0, 4);
   if (endYear === startYear) return startYear;

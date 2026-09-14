@@ -17,4 +17,8 @@ describe('formatPlayed', () => {
   it('shows an open span when in progress', () => {
     expect(formatPlayed('2025-06-01', undefined, 'in-progress')).toBe('2025–');
   });
+
+  it('shows an open span when in progress even if a stale end date is set', () => {
+    expect(formatPlayed('2025-06-01', '2025-12-01', 'in-progress')).toBe('2025–');
+  });
 });

@@ -429,8 +429,14 @@ describe('formatPlayed', () => {
   it('shows an open span when in progress', () => {
     expect(formatPlayed('2025-06-01', undefined, 'in-progress')).toBe('2025–');
   });
+
+  it('shows an open span when in progress even if a stale end date is set', () => {
+    expect(formatPlayed('2025-06-01', '2025-12-01', 'in-progress')).toBe('2025–');
+  });
 });
 ```
+
+`status` is checked before `endDate` is even looked at, so a stale or accidentally-set end date on an in-progress entry can never override the open-span display. The admin form (Task 16) always renders an editable end-date field regardless of status, so this state is reachable, not hypothetical.
 
 - [ ] **Step 2: Run to verify it fails**
 
@@ -448,9 +454,8 @@ export function formatPlayed(
 ): string {
   const startYear = startDate.slice(0, 4);
 
-  if (!endDate) {
-    return status === 'in-progress' ? `${startYear}–` : startYear;
-  }
+  if (status === 'in-progress') return `${startYear}–`;
+  if (!endDate) return startYear;
 
   const endYear = endDate.slice(0, 4);
   if (endYear === startYear) return startYear;
@@ -462,7 +467,7 @@ export function formatPlayed(
 - [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run lib/format.test.ts`
-Expected: PASS (4 tests)
+Expected: PASS (5 tests)
 
 - [ ] **Step 5: Commit**
 
@@ -2863,7 +2868,7 @@ git commit -m "Add admin dashboard and edit pages for both collections"
 - [ ] **Step 1: Run the full suite**
 
 Run: `npm run test`
-Expected: all pass — `devGuard` (2), `collections` (8), `format` (4), `content` (7), `entries` (14), `Scorecard` (6), `EntryForm` (5), `AdminDashboard` (5). 51 tests.
+Expected: all pass — `devGuard` (2), `collections` (8), `format` (5), `content` (7), `entries` (14), `Scorecard` (6), `EntryForm` (5), `AdminDashboard` (5). 52 tests.
 
 - [ ] **Step 2: Lint and typecheck**
 
