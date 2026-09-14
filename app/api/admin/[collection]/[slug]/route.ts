@@ -19,11 +19,13 @@ function isValidInput(body: unknown): body is EntryInput {
   return (
     typeof input.title === 'string' &&
     Array.isArray(input.tags) &&
+    input.tags.every((tag) => typeof tag === 'string') &&
     typeof input.startDate === 'string' &&
     (input.status === 'complete' || input.status === 'in-progress') &&
-    typeof input.hook === 'string' &&
     typeof input.sections === 'object' &&
-    input.sections !== null
+    input.sections !== null &&
+    Object.values(input.sections as Record<string, unknown>).every((v) => typeof v === 'string') &&
+    typeof input.hook === 'string'
   );
 }
 
