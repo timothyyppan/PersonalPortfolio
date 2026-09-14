@@ -20,8 +20,8 @@ export default function AboutPage() {
           makes a problem interesting enough for you to take it on._
         </p>
         <p>
-          _Placeholder: golf. How long you have played, what keeps you coming back, and whether it
-          has anything to do with how you think about engineering._
+          _Placeholder: what you enjoy outside of engineering, and the perspectives or routines
+          that keep your work grounded._
         </p>
       </div>
 

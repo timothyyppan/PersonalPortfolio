@@ -1,26 +1,20 @@
 import Link from 'next/link';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { COLLECTIONS, type CollectionKey } from '@/lib/collections';
+import { COLLECTIONS } from '@/lib/collections';
 import { formatPlayed } from '@/lib/format';
-import { getEntries, type Entry } from '@/lib/content';
+import type { Entry } from '@/lib/content';
 import { DemoEmbed } from './DemoEmbed';
-
-function holeNumber(collection: CollectionKey, slug: string): number {
-  return getEntries(collection).findIndex((e) => e.slug === slug) + 1;
-}
 
 export function EntryDetail({ entry }: { entry: Entry }) {
   const config = COLLECTIONS[entry.collection];
-  const hole = holeNumber(entry.collection, entry.slug);
 
   return (
     <article className="py-12">
       <Link href={`/${entry.collection}`} className="font-mono text-xs text-inkSoft">
-        Back to the card
+        Back to {config.label.toLowerCase()}
       </Link>
 
       <div className="mt-6 flex items-baseline gap-3 font-mono text-xs text-inkSoft">
-        {hole > 0 && <span>Hole {String(hole).padStart(2, '0')}</span>}
         <span>{formatPlayed(entry.startDate, entry.endDate, entry.status)}</span>
         <span>{entry.status === 'complete' ? 'Complete' : 'In progress'}</span>
       </div>
@@ -54,7 +48,7 @@ export function EntryDetail({ entry }: { entry: Entry }) {
       <DemoEmbed slug={entry.slug} />
 
       <p className="mt-10 font-mono text-xs text-inkSoft">
-        {config.label} · {config.nine}
+        {config.label}
       </p>
     </article>
   );

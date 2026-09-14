@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-export const alt = 'Timothy Pan — engineer, builder, golfer';
+export const alt = 'Timothy Pan — engineer, builder, problem solver';
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -19,7 +19,7 @@ export default function OpengraphImage() {
           padding: '80px',
         }}
       >
-        <div style={{ fontSize: 72, letterSpacing: -2 }}>Engineer. Builder. Golfer.</div>
+        <div style={{ fontSize: 72, letterSpacing: -2 }}>Engineer. Builder. Problem solver.</div>
         <div style={{ marginTop: 28, fontSize: 32, color: '#55604F' }}>
           Timothy Pan — computer engineering at Waterloo
         </div>

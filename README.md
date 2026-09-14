@@ -1,6 +1,6 @@
 # Timothy Pan — Portfolio
 
-A golf-themed portfolio built on Next.js. The scorecard is the site's index: each project and role is a hole, and every column on the card renders real data from the content files.
+A personal portfolio built on Next.js. Its work index presents projects and roles with their tools, dates, and status, all sourced from the content files.
 
 ## Running it
 

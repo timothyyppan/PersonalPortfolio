@@ -9,7 +9,7 @@ import type { Entry } from '@/lib/content';
 const HEADER_GRID = 'grid-cols-[3rem_1fr_11rem_5rem_3rem]';
 const ROW_GRID = 'sm:grid-cols-[3rem_1fr_11rem_5rem_3rem]';
 
-function ScoreMark({ status }: { status: Entry['status'] }) {
+function StatusMark({ status }: { status: Entry['status'] }) {
   const complete = status === 'complete';
   return (
     <span
@@ -39,24 +39,24 @@ export function Scorecard({
         data-testid="scorecard-header"
         className="flex items-baseline justify-between border-b border-rule px-4 py-3"
       >
-        <h2 className="text-base">The card</h2>
+        <h2 className="text-base">Selected {config.label.toLowerCase()}</h2>
         <span className="font-mono text-xs text-inkSoft">
-          {config.nine} · {entries.length} {entries.length === 1 ? 'hole' : 'holes'}
+          {entries.length} {entries.length === 1 ? 'entry' : 'entries'}
         </span>
       </div>
 
       {entries.length === 0 ? (
         <p className="px-4 py-8 text-sm text-inkSoft">
-          No {config.label.toLowerCase()} on the card yet. Add one from the admin page.
+          No {config.label.toLowerCase()} yet. Add one from the admin page.
         </p>
       ) : (
         <>
           <div className={`hidden ${HEADER_GRID} gap-2 border-b border-rule px-4 py-2 font-mono text-[0.7rem] text-inkSoft sm:grid`}>
-            <span>HOLE</span>
+            <span>NO.</span>
             <span>{config.itemHeader}</span>
-            <span>CLUBS</span>
-            <span>PLAYED</span>
-            <span className="text-center">CARD</span>
+            <span>TOOLS</span>
+            <span>DATES</span>
+            <span className="text-center">STATUS</span>
           </div>
 
           <ul>
@@ -87,7 +87,7 @@ export function Scorecard({
                   </span>
 
                   <span className="sm:text-center">
-                    <ScoreMark status={entry.status} />
+                    <StatusMark status={entry.status} />
                   </span>
                 </Link>
               </li>

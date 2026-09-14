@@ -9,7 +9,7 @@ export default function HomePage() {
     <div className="py-12">
       <section>
         <h1 className="max-w-prose text-4xl leading-[1.15] tracking-tight sm:text-5xl">
-          Engineer. Builder. Golfer.
+          Engineer. Builder. Problem solver.
         </h1>
         <p className="mt-6 max-w-prose text-lg leading-relaxed text-inkSoft">
           Computer engineering at Waterloo. Previously at Apple, where I rebuilt packaging test
@@ -17,8 +17,8 @@ export default function HomePage() {
           silicon, and robotics.
         </p>
         <p className="mt-4 max-w-prose leading-relaxed text-inkSoft">
-          _Placeholder: one or two sentences in your own voice — what you care about building, and
-          what golf has to do with any of it._
+          _Placeholder: one or two sentences in your own voice — what you care about building and
+          the kinds of problems you want to solve._
         </p>
       </section>
 

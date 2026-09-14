@@ -4,7 +4,6 @@ export interface CollectionConfig {
   key: CollectionKey;
   label: string;
   singular: string;
-  nine: 'OUT' | 'IN';
   itemHeader: string;
   sections: readonly string[];
 }
@@ -14,7 +13,6 @@ export const COLLECTIONS: Record<CollectionKey, CollectionConfig> = {
     key: 'projects',
     label: 'Projects',
     singular: 'Project',
-    nine: 'OUT',
     itemHeader: 'PROJECT',
     sections: ['Overview', 'Design', 'Plan', 'What I Learned', 'Troubles / Debugging'],
   },
@@ -22,7 +20,6 @@ export const COLLECTIONS: Record<CollectionKey, CollectionConfig> = {
     key: 'experience',
     label: 'Experience',
     singular: 'Role',
-    nine: 'IN',
     itemHeader: 'ROLE',
     sections: ['Overview', 'What I Built', 'What I Learned', 'Highlights'],
   },

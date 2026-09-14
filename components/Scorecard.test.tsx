@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Scorecard } from './Scorecard';
 import type { Entry } from '@/lib/content';
 
@@ -28,7 +28,7 @@ const entries: Entry[] = [
 ];
 
 describe('Scorecard', () => {
-  it('numbers rows as holes in order', () => {
+  it('numbers entries in order', () => {
     render(<Scorecard collection="projects" entries={entries} />);
     expect(screen.getByText('01')).toBeInTheDocument();
     expect(screen.getByText('02')).toBeInTheDocument();
@@ -49,7 +49,7 @@ describe('Scorecard', () => {
     expect(screen.queryByText(/Python · Machine Learning/)).not.toBeInTheDocument();
   });
 
-  it('shows the played span and status in accessible text', () => {
+  it('shows the date span and status in accessible text', () => {
     render(<Scorecard collection="projects" entries={entries} />);
     expect(screen.getByText('2024')).toBeInTheDocument();
     expect(screen.getByText('2024–')).toBeInTheDocument();
@@ -57,15 +57,16 @@ describe('Scorecard', () => {
     expect(screen.getAllByLabelText('In progress')).toHaveLength(1);
   });
 
-  it('labels the nine for the collection', () => {
+  it('labels the selected collection and entry count', () => {
     render(<Scorecard collection="projects" entries={entries} />);
     const header = screen.getByTestId('scorecard-header');
-    expect(within(header).getByText(/OUT/)).toBeInTheDocument();
+    expect(header).toHaveTextContent('Selected projects');
+    expect(header).toHaveTextContent('2 entries');
   });
 
   it('renders an invitation when the collection is empty', () => {
     render(<Scorecard collection="projects" entries={[]} />);
-    expect(screen.getByText(/No projects on the card yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/No projects yet/i)).toBeInTheDocument();
   });
 
   it('gives each row link a concise accessible name instead of its full visible content', () => {
