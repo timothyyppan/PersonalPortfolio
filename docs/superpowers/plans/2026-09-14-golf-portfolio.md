@@ -1938,6 +1938,7 @@ tags:
   - Python
   - FastAPI
   - spaCy
+  - SQLite
 startDate: "2025-01-01"
 endDate: "2025-05-01"
 status: complete
@@ -2010,7 +2011,7 @@ role: Packaging Team
 location: Shanghai, China
 tags:
   - Python
-  - PyTorch
+  - Machine Learning
   - Data Pipelines
 startDate: "2025-01-01"
 endDate: "2025-08-01"
