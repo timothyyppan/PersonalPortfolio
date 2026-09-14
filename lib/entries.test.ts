@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -83,6 +83,20 @@ describe('createEntry / updateEntry / deleteEntry', () => {
 
   it('rejects a title that produces an empty slug', () => {
     expect(() => createEntry('projects', '!!!', root)).toThrow('Invalid slug');
+  });
+
+  it('cleans up the directory if the initial write fails, so retrying is possible', () => {
+    const writeSpy = vi.spyOn(fs, 'writeFileSync').mockImplementationOnce(() => {
+      throw new Error('disk full');
+    });
+
+    expect(() => createEntry('projects', 'Will Fail', root)).toThrow('disk full');
+    writeSpy.mockRestore();
+
+    expect(fs.existsSync(path.join(root, 'projects', 'will-fail'))).toBe(false);
+
+    const slug = createEntry('projects', 'Will Fail', root);
+    expect(slug).toBe('will-fail');
   });
 
   it('updates an existing entry', () => {

@@ -698,7 +698,7 @@ git commit -m "Add collection-aware MDX content loader"
 
 ```ts
 // lib/entries.test.ts
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -783,6 +783,20 @@ describe('createEntry / updateEntry / deleteEntry', () => {
 
   it('rejects a title that produces an empty slug', () => {
     expect(() => createEntry('projects', '!!!', root)).toThrow('Invalid slug');
+  });
+
+  it('cleans up the directory if the initial write fails, so retrying is possible', () => {
+    const writeSpy = vi.spyOn(fs, 'writeFileSync').mockImplementationOnce(() => {
+      throw new Error('disk full');
+    });
+
+    expect(() => createEntry('projects', 'Will Fail', root)).toThrow('disk full');
+    writeSpy.mockRestore();
+
+    expect(fs.existsSync(path.join(root, 'projects', 'will-fail'))).toBe(false);
+
+    const slug = createEntry('projects', 'Will Fail', root);
+    expect(slug).toBe('will-fail');
   });
 
   it('updates an existing entry', () => {
@@ -886,6 +900,10 @@ export function buildBody(sections: SectionMap, sectionNames: readonly string[])
   return sectionNames.map((name) => `## ${name}\n\n${(sections[name] ?? '').trim()}\n`).join('\n');
 }
 
+// Treats any line starting with "## " as a section boundary, with no awareness of fenced
+// code blocks or quoted examples. If a section's own prose contains a "## <real section name>"
+// line (e.g. someone pastes example Markdown), that line is mistaken for a real boundary. This
+// is a known limitation for hand-edited content; not guarded against here.
 export function parseSections(body: string, sectionNames: readonly string[]): SectionMap {
   const result: SectionMap = {};
   for (const name of sectionNames) result[name] = '';
@@ -937,24 +955,31 @@ export function createEntry(
 
   fs.mkdirSync(dir, { recursive: true });
 
-  const sections: SectionMap = {};
-  for (const name of config.sections) {
-    sections[name] = `_Placeholder: fill in ${name.toLowerCase()}._`;
-  }
+  try {
+    const sections: SectionMap = {};
+    for (const name of config.sections) {
+      sections[name] = `_Placeholder: fill in ${name.toLowerCase()}._`;
+    }
 
-  writeEntryFile(
-    collection,
-    slug,
-    {
-      title,
-      tags: [],
-      startDate: new Date().toISOString().slice(0, 10),
-      status: 'in-progress',
-      hook: '',
-    },
-    sections,
-    root
-  );
+    writeEntryFile(
+      collection,
+      slug,
+      {
+        title,
+        tags: [],
+        startDate: new Date().toISOString().slice(0, 10),
+        status: 'in-progress',
+        hook: '',
+      },
+      sections,
+      root
+    );
+  } catch (error) {
+    // Don't leave a directory behind with no index.mdx -- that would make every future
+    // createEntry for this slug fail with a misleading "already exists" forever.
+    fs.rmSync(dir, { recursive: true, force: true });
+    throw error;
+  }
 
   return slug;
 }
@@ -987,7 +1012,7 @@ export function deleteEntry(
 - [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run lib/entries.test.ts`
-Expected: PASS (14 tests)
+Expected: PASS (15 tests)
 
 - [ ] **Step 5: Commit**
 
@@ -2903,7 +2928,7 @@ git commit -m "Add admin dashboard and edit pages for both collections"
 - [ ] **Step 1: Run the full suite**
 
 Run: `npm run test`
-Expected: all pass — `devGuard` (2), `collections` (8), `format` (5), `content` (10), `entries` (14), `Scorecard` (6), `EntryForm` (5), `AdminDashboard` (5). 55 tests.
+Expected: all pass — `devGuard` (2), `collections` (8), `format` (5), `content` (10), `entries` (15), `Scorecard` (6), `EntryForm` (5), `AdminDashboard` (5). 56 tests.
 
 - [ ] **Step 2: Lint and typecheck**
 

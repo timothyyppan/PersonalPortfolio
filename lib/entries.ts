@@ -22,6 +22,10 @@ export function buildBody(sections: SectionMap, sectionNames: readonly string[])
   return sectionNames.map((name) => `## ${name}\n\n${(sections[name] ?? '').trim()}\n`).join('\n');
 }
 
+// Treats any line starting with "## " as a section boundary, with no awareness of fenced
+// code blocks or quoted examples. If a section's own prose contains a "## <real section name>"
+// line (e.g. someone pastes example Markdown), that line is mistaken for a real boundary. This
+// is a known limitation for hand-edited content; not guarded against here.
 export function parseSections(body: string, sectionNames: readonly string[]): SectionMap {
   const result: SectionMap = {};
   for (const name of sectionNames) result[name] = '';
@@ -73,24 +77,31 @@ export function createEntry(
 
   fs.mkdirSync(dir, { recursive: true });
 
-  const sections: SectionMap = {};
-  for (const name of config.sections) {
-    sections[name] = `_Placeholder: fill in ${name.toLowerCase()}._`;
-  }
+  try {
+    const sections: SectionMap = {};
+    for (const name of config.sections) {
+      sections[name] = `_Placeholder: fill in ${name.toLowerCase()}._`;
+    }
 
-  writeEntryFile(
-    collection,
-    slug,
-    {
-      title,
-      tags: [],
-      startDate: new Date().toISOString().slice(0, 10),
-      status: 'in-progress',
-      hook: '',
-    },
-    sections,
-    root
-  );
+    writeEntryFile(
+      collection,
+      slug,
+      {
+        title,
+        tags: [],
+        startDate: new Date().toISOString().slice(0, 10),
+        status: 'in-progress',
+        hook: '',
+      },
+      sections,
+      root
+    );
+  } catch (error) {
+    // Don't leave a directory behind with no index.mdx -- that would make every future
+    // createEntry for this slug fail with a misleading "already exists" forever.
+    fs.rmSync(dir, { recursive: true, force: true });
+    throw error;
+  }
 
   return slug;
 }
