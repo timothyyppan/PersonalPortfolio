@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { motion, useReducedMotion } from 'framer-motion';
 import { COLLECTIONS, type CollectionKey } from '@/lib/collections';
 import { formatPlayed } from '@/lib/format';
 import type { Entry } from '@/lib/content';
@@ -32,6 +35,7 @@ export function Scorecard({
   entries: Entry[];
 }) {
   const config = COLLECTIONS[collection];
+  const reduceMotion = useReducedMotion();
 
   return (
     <section className="border border-rule bg-cardRaised">
@@ -61,11 +65,18 @@ export function Scorecard({
 
           <ul>
             {entries.map((entry, index) => (
-              <li key={entry.slug} className="border-b border-ruleSoft last:border-b-0">
+              <motion.li
+                key={entry.slug}
+                className="border-b border-ruleSoft last:border-b-0"
+                initial={reduceMotion ? undefined : { opacity: 0, y: 12 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.4, delay: Math.min(index * 0.04, 0.3), ease: 'easeOut' }}
+              >
                 <Link
                   href={`/${collection}/${entry.slug}`}
                   aria-label={`${entry.title}, ${formatPlayed(entry.startDate, entry.endDate, entry.status)}, ${entry.status === 'complete' ? 'complete' : 'in progress'}`}
-                  className={`grid grid-cols-1 gap-1 px-4 py-4 hover:bg-card ${ROW_GRID} sm:items-baseline sm:gap-2`}
+                  className={`grid grid-cols-1 gap-1 px-4 py-4 transition-colors duration-200 hover:bg-card ${ROW_GRID} sm:items-baseline sm:gap-2`}
                 >
                   <span className="font-mono text-xs text-inkSoft">
                     {String(index + 1).padStart(2, '0')}
@@ -90,7 +101,7 @@ export function Scorecard({
                     <StatusMark status={entry.status} />
                   </span>
                 </Link>
-              </li>
+              </motion.li>
             ))}
           </ul>
 

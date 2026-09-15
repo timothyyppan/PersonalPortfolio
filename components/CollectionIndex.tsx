@@ -1,6 +1,7 @@
 import { COLLECTIONS, type CollectionKey } from '@/lib/collections';
 import { getEntries } from '@/lib/content';
 import { Scorecard } from './Scorecard';
+import { Reveal } from './Reveal';
 
 const INTRO: Record<CollectionKey, string> = {
   projects:
@@ -14,11 +15,15 @@ export function CollectionIndex({ collection }: { collection: CollectionKey }) {
 
   return (
     <div className="py-12">
-      <h1 className="text-3xl">{config.label}</h1>
-      <p className="mt-3 max-w-prose text-inkSoft">{INTRO[collection]}</p>
-      <div className="mt-8">
+      <Reveal>
+        <h1 className="text-3xl">{config.label}</h1>
+      </Reveal>
+      <Reveal delay={0.08}>
+        <p className="mt-3 max-w-prose text-inkSoft">{INTRO[collection]}</p>
+      </Reveal>
+      <Reveal delay={0.1} className="mt-8">
         <Scorecard collection={collection} entries={entries} />
-      </div>
+      </Reveal>
     </div>
   );
 }

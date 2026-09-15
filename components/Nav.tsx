@@ -16,7 +16,7 @@ export function Nav() {
     <header>
       <div className="mx-auto max-w-4xl px-6 pt-6">
         <div className="flex flex-wrap items-baseline justify-between gap-y-2">
-          <Link href="/" className="text-base">
+          <Link href="/" className="text-base transition-colors duration-200 hover:text-flag">
             Timothy Pan
           </Link>
           <nav className="flex gap-5 text-sm text-inkSoft">
@@ -27,13 +27,20 @@ export function Nav() {
                   key={link.href}
                   href={link.href}
                   aria-current={active ? 'page' : undefined}
-                  className={active ? 'text-ink underline underline-offset-4' : undefined}
+                  className={
+                    (active ? 'text-ink underline underline-offset-4 ' : '') +
+                    'transition-colors duration-200 hover:text-ink'
+                  }
                 >
                   {link.label}
                 </Link>
               );
             })}
-            <a href="/TimothyPanResume.pdf" download>
+            <a
+              href="/TimothyPanResume.pdf"
+              download
+              className="transition-colors duration-200 hover:text-ink"
+            >
               Resume
             </a>
           </nav>
