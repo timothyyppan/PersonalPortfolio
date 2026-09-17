@@ -1,36 +1,40 @@
 import Link from 'next/link';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { COLLECTIONS } from '@/lib/collections';
-import { formatPlayed } from '@/lib/format';
+import { formatDateRange } from '@/lib/format';
 import type { Entry } from '@/lib/content';
 import { DemoEmbed } from './DemoEmbed';
 import { Reveal } from './Reveal';
 
 export function EntryDetail({ entry }: { entry: Entry }) {
   const config = COLLECTIONS[entry.collection];
+  const showDates = entry.collection === 'experience';
 
   return (
     <article className="py-12">
       <Link
-        href={`/${entry.collection}`}
+        href={`/#${entry.collection}`}
         className="font-mono text-xs text-inkSoft transition-colors duration-200 hover:text-ink"
       >
         Back to {config.label.toLowerCase()}
       </Link>
 
       <Reveal>
-        <div className="mt-6 flex items-baseline gap-3 font-mono text-xs text-inkSoft">
-          <span>{formatPlayed(entry.startDate, entry.endDate, entry.status)}</span>
-          <span>{entry.status === 'complete' ? 'Complete' : 'In progress'}</span>
-        </div>
+        {showDates && (
+          <div className="mt-6 font-mono text-xs text-inkSoft">
+            {formatDateRange(entry.startDate, entry.endDate)}
+          </div>
+        )}
 
-        <h1 className="mt-2 text-3xl leading-tight">{entry.title}</h1>
+        <h1 className={`text-3xl leading-tight ${showDates ? 'mt-2' : 'mt-6'}`}>{entry.title}</h1>
 
         {entry.org && (
-          <p className="mt-2 text-inkSoft">
-            {entry.role ? `${entry.role}, ` : ''}
-            {entry.org}
-            {entry.location ? ` — ${entry.location}` : ''}
+          <p className="mt-2 text-lg font-bold tracking-tight text-flag">{entry.org}</p>
+        )}
+
+        {(entry.role || entry.location) && (
+          <p className="mt-1 text-inkSoft">
+            {[entry.role, entry.location].filter(Boolean).join(' — ')}
           </p>
         )}
 

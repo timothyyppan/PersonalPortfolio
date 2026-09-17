@@ -1,15 +1,25 @@
-export function formatPlayed(
-  startDate: string,
-  endDate: string | undefined,
-  status: 'in-progress' | 'complete'
-): string {
-  const startYear = startDate.slice(0, 4);
+const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
-  if (status === 'in-progress') return `${startYear}–`;
-  if (!endDate) return startYear;
+function formatMonthYear(date: string): string {
+  const [year, month] = date.split('-');
+  return `${MONTHS[Number(month) - 1]} ${year}`;
+}
 
-  const endYear = endDate.slice(0, 4);
-  if (endYear === startYear) return startYear;
-
-  return `${startYear}–${endYear.slice(2)}`;
+export function formatDateRange(startDate: string, endDate?: string): string {
+  const start = formatMonthYear(startDate);
+  if (!endDate) return `${start} – Present`;
+  return `${start} – ${formatMonthYear(endDate)}`;
 }

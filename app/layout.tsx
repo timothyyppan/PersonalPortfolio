@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${fraunces.variable} ${plexMono.variable}`}>
       <body className="flex min-h-screen flex-col font-serif">
         <Nav />
-        <main className="mx-auto w-full max-w-4xl flex-1 px-6">{children}</main>
+        <main className="mx-auto w-full max-w-4xl flex-1 px-4 sm:px-6">{children}</main>
         <Footer />
       </body>
     </html>

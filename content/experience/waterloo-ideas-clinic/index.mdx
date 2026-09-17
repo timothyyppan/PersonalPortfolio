@@ -3,27 +3,44 @@ title: Research Assistant Intern
 org: University of Waterloo
 role: Pearl Sullivan Engineering IDEAs Clinic
 location: Waterloo, Canada
-tags:
-  - Robotics
-  - SystemVerilog
-  - Linux
 startDate: "2026-05-01"
 endDate: "2026-08-01"
-status: complete
-hook: Built a walking bipedal robot, a real-time FPGA audio processor, and a remote compile server used by several cohorts.
 ---
 
 ## Overview
 
-_Placeholder: what the IDEAs Clinic is and what you were working toward._
+The Pearl Sullivan Engineering IDEAs Clinic at the University of Waterloo is an experiential learning hub that supplements traditional engineering curriculum with hands-on, real-world design challenges. Essentially, the IDEAs Clinic works with professors and industry partners to develop engineering courses, workshops, and hackathons for undergraduate students to learn and benefit from.
+
+I know right off the bat, "Research Assistant", "designing courses", and "running workshops" sound boring and a lot of grunt work, but in all honesty I had so much fun in this position. I had a lot of freedom with picking what projects interested me and what direction I wanted to take prototyping. Not only that, this might've been the position where I learned the most about hardware.
+
+I had the chance to work on developing:
+- ECE198
+- MTE100
+- CHEM181
+- Quantum Optics Workshop
+- MCU Workshop
+- FPGA Workshop
+- Brock Solutions' Airport Automation Challenge
+- Toyota's Innovation Challenge
 
 ## What I Built
 
-_Placeholder: the bipedal robot on a Raspberry Pi 5 with a reinforcement learning policy trained in MuJoCo that transferred to hardware across three gaits; the DE10-Lite audio effects processor running five DSP effects under 5ms latency; and the Linux remote-compile server that removed a 30GB local Quartus install for 50+ concurrent users._
+Across all the projects, there were some mundane things that had to be tackled, but also a lot of highlights.
+
+I'll highlight what I developed for the FPGA workshop, as well as Toyota's Innovation Challenge as this is what I enjoyed the most.
+
+For the FPGA workshop:
+- I developed a DSP workshop on an FPGA where the FPGA would take an input from a microphone, perform some DSP to create audio effects, and output the result to headphones. The difficulty here was developing a PCB with a microphone and DAC in KiCad that could be connected to the FPGA.
+- When running the workshop, I noticed a bottleneck where over half of the students had left due to not having Quartus Prime Lite installed despite being reminded to do so ahead of time. This is because downloading it would have taken more than two hours. To stop future runnings of the workshop from losing people to this bottleneck, I figured that a remote Linux server with multiple workers that can compile Quartus projects could replace having the entire software installed locally. All students would need to install is the USB Blaster driver from Quartus to flash their program to the FPGA. This cut download time down from more than two hours to about five minutes, entirely removing the bottleneck I had faced.
+
+For Toyota's Innovation Challenge:
+- I prototyped a reinforcement learning robot where I taught it how to walk. My coworkers and I built everything in-house, from CADing and 3D printing the structure to assembling and programming a Raspberry Pi to collect sensor data from an accelerometer and a live video feed from a camera. Although the design was rudimentary, I was able to use MuJoCo to simulate the hardware and train a reinforcement learning policy. Given that this was my first attempt at both reinforcement learning and building a robot, I was happy with the results, although I wished I had more time, as my internship ended soon after engineering the first prototype.
 
 ## What I Learned
 
-_Placeholder: what sim-to-real transfer actually cost you, and what you learned building tools other people depend on._
+At the IDEAs Clinic, I learned what reinforcement learning was and how to do it. Not only that, I stepped out of my comfort zone and expanded a lot upon my hardware skills, from 3D printing, CADing, soldering, and PCB design.
+
+Furthermore, I was on a lot of different projects during my internship, and it forced me to adapt quickly to multi-tasking and balancing several pressing deadlines at once. Before this, I was used to focusing on one really large project, but this taught me how to balance and keep up to date with weekly meetings for each project.
 
 ## Highlights
 

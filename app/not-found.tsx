@@ -12,7 +12,7 @@ export default function NotFound() {
         <Link href="/" className="underline underline-offset-4">
           Back to the start
         </Link>
-        <Link href="/projects" className="underline underline-offset-4">
+        <Link href="/#projects" className="underline underline-offset-4">
           See every project
         </Link>
       </div>

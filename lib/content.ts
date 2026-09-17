@@ -12,11 +12,12 @@ export interface EntryFrontmatter {
   tags: string[];
   startDate: string;
   endDate?: string;
-  status: EntryStatus;
-  hook: string;
+  status?: EntryStatus;
+  hook?: string;
   org?: string;
   role?: string;
   location?: string;
+  order?: number;
 }
 
 export interface Entry extends EntryFrontmatter {
@@ -38,7 +39,12 @@ export function getEntries(collection: CollectionKey, root: string = CONTENT_ROO
     .filter((d) => d.isDirectory() && !d.name.startsWith('_'))
     .map((d) => getEntry(collection, d.name, root))
     .filter((e): e is Entry => e !== null)
-    .sort((a, b) => b.startDate.localeCompare(a.startDate));
+    .sort((a, b) => {
+      const orderA = a.order ?? Number.POSITIVE_INFINITY;
+      const orderB = b.order ?? Number.POSITIVE_INFINITY;
+      if (orderA !== orderB) return orderA - orderB;
+      return b.startDate.localeCompare(a.startDate);
+    });
 }
 
 export function getEntry(
@@ -59,8 +65,8 @@ export function getEntry(
   try {
     const { data, content } = matter(fs.readFileSync(filePath, 'utf-8'));
 
-    if (!data.title || !data.startDate || !data.status || !data.hook) {
-      throw new Error('missing required frontmatter (title, startDate, status, or hook)');
+    if (!data.title || !data.startDate) {
+      throw new Error('missing required frontmatter (title or startDate)');
     }
 
     return {
@@ -75,6 +81,7 @@ export function getEntry(
       org: data.org,
       role: data.role,
       location: data.location,
+      order: data.order,
       content,
     };
   } catch (error) {
