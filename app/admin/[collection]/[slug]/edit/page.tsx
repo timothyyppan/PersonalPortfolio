@@ -14,6 +14,6 @@ export default function EditEntryPage({ params }: { params: { collection: string
   return <div className="py-12">
     <h1 className="text-3xl">{entry.title}</h1>
     <p className="mt-2 font-mono text-xs text-inkSoft">{config.label} — {entry.slug}</p>
-    <div className="mt-10"><EntryForm collection={config.key} slug={entry.slug} initial={{ title: entry.title, tags: entry.tags, startDate: entry.startDate, endDate: entry.endDate ?? '', status: entry.status, hook: entry.hook, org: entry.org, role: entry.role, location: entry.location, sections: parseSections(entry.content, config.sections) }} /></div>
+    <div className="mt-10"><EntryForm collection={config.key} slug={entry.slug} initial={{ title: entry.title, tags: entry.tags, startDate: entry.startDate, endDate: entry.endDate ?? '', status: entry.status ?? 'in-progress', hook: entry.hook ?? '', org: entry.org, role: entry.role, location: entry.location, sections: parseSections(entry.content, config.sections) }} /></div>
   </div>;
 }

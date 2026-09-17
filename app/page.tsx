@@ -12,19 +12,19 @@ export default function HomePage() {
       <section id="about" className="scroll-mt-28">
         <Reveal>
           <h1 className="max-w-prose text-4xl leading-[1.15] tracking-tight sm:text-5xl">
-            I'm a T-shaped computer engineer. <br></br>I love to learn about different topics in new disciplines!
+            I’m a T-shaped computer engineer. <br></br>I love to learn about different topics in new disciplines!
           </h1>
         </Reveal>
         <Reveal delay={0.08}>
           <p className="mt-6 max-w-prose text-lg leading-relaxed text-inkSoft">
-            I'm a 4th Year Computer Engineering student at the University of Waterloo. <br></br> I work on software design, data pipelines, 
+            I’m a 4th Year Computer Engineering student at the University of Waterloo. <br></br> I work on software design, data pipelines,
             AI/ML/RL, RTL, robotics, and 3D printing.
           </p>
         </Reveal>
         <Reveal delay={0.16}>
           <div className="mt-4 max-w-prose leading-relaxed text-inkSoft">
             <p>
-              Throughout my previous experiences and projects, I've found that the biggest motivating factors that made me do my best work when:
+              Throughout my previous experiences and projects, I’ve found that the biggest motivating factors that made me do my best work when:
             </p>
             <ul className="mt-2 list-disc pl-5 space-y-1">
               <li>Working on problems tied to my personal passions or hobbies</li>
