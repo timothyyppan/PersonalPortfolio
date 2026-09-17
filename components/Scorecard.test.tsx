@@ -57,11 +57,12 @@ describe('Scorecard', () => {
     );
   });
 
-  it('renders tags as discrete items, not a joined string', () => {
+  it('does not show tools or project descriptions on the scorecard', () => {
     render(<Scorecard collection="projects" entries={projectEntries} />);
-    expect(screen.getByText('Python')).toBeInTheDocument();
-    expect(screen.getByText('Machine Learning')).toBeInTheDocument();
-    expect(screen.queryByText(/Python · Machine Learning/)).not.toBeInTheDocument();
+    expect(screen.queryByText('TOOLS')).not.toBeInTheDocument();
+    expect(screen.queryByText('Python')).not.toBeInTheDocument();
+    expect(screen.queryByText('Machine Learning')).not.toBeInTheDocument();
+    expect(screen.queryByText('A taped-out SIMD accelerator.')).not.toBeInTheDocument();
   });
 
   it('does not show dates or a status indicator for projects', () => {
@@ -77,11 +78,10 @@ describe('Scorecard', () => {
     expect(screen.getByText('Jan 2025 – Aug 2025')).toBeInTheDocument();
   });
 
-  it('labels the selected collection and entry count', () => {
+  it('does not render a selected-collection summary row', () => {
     render(<Scorecard collection="projects" entries={projectEntries} />);
-    const header = screen.getByTestId('scorecard-header');
-    expect(header).toHaveTextContent('Selected projects');
-    expect(header).toHaveTextContent('2 entries');
+    expect(screen.queryByText('Selected projects')).not.toBeInTheDocument();
+    expect(screen.queryByText('2 entries')).not.toBeInTheDocument();
   });
 
   it('renders an invitation when the collection is empty', () => {

@@ -60,7 +60,7 @@ export function EntryDetail({ entry }: { entry: Entry }) {
         </div>
       </Reveal>
 
-      <DemoEmbed slug={entry.slug} />
+      {entry.collection === 'projects' && <DemoEmbed slug={entry.slug} />}
 
       <p className="mt-10 font-mono text-xs text-inkSoft">
         {config.label}

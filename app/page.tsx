@@ -12,13 +12,13 @@ export default function HomePage() {
       <section id="about" className="scroll-mt-28">
         <Reveal>
           <h1 className="max-w-prose text-4xl leading-[1.15] tracking-tight sm:text-5xl">
-            I’m a T-shaped computer engineer. <br></br>I love to learn about different topics in new disciplines!
+            I’m a T-shaped computer engineer. <br></br>I love computers but I also enjoy learning about different topics in new disciplines!
           </h1>
         </Reveal>
         <Reveal delay={0.08}>
           <p className="mt-6 max-w-prose text-lg leading-relaxed text-inkSoft">
             I’m a 4th Year Computer Engineering student at the University of Waterloo. <br></br> I work on software design, data pipelines,
-            AI/ML/RL, RTL, robotics, and 3D printing.
+            AI/ML/RL, RTL, and robotics.
           </p>
         </Reveal>
         <Reveal delay={0.16}>
@@ -39,7 +39,7 @@ export default function HomePage() {
             download
             className="underline underline-offset-4 transition-colors duration-200 hover:text-flag"
           >
-            Download my resume
+            Feel free to download my resume
           </a>
         </Reveal>
       </section>

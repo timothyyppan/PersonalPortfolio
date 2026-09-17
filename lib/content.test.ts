@@ -32,6 +32,13 @@ describe('getEntries', () => {
     expect(getEntries('projects', root).map((e) => e.slug)).toEqual(['newer', 'older']);
   });
 
+  it('uses an explicit order before start date', () => {
+    writeEntry('experience', 'waterloo', 'title: Waterloo\ntags: []\nstartDate: "2026-05-01"\nstatus: complete\nhook: h\norder: 2', '## Overview\n\nA');
+    writeEntry('experience', 'apple', 'title: Apple\ntags: []\nstartDate: "2025-01-01"\nstatus: complete\nhook: h\norder: 1', '## Overview\n\nB');
+
+    expect(getEntries('experience', root).map((e) => e.slug)).toEqual(['apple', 'waterloo']);
+  });
+
   it('keeps collections separate', () => {
     writeEntry('projects', 'a-project', 'title: A\ntags: []\nstartDate: "2025-01-01"\nstatus: complete\nhook: h', '## Overview\n\nA');
     writeEntry('experience', 'a-role', 'title: B\ntags: []\nstartDate: "2025-01-01"\nstatus: complete\nhook: h\norg: Apple', '## Overview\n\nB');
