@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Scorecard } from './Scorecard';
 import type { Entry } from '@/lib/content';
 
-const entries: Entry[] = [
+const projectEntries: Entry[] = [
   {
     collection: 'projects',
     slug: 'asic-math-accelerator',
@@ -27,15 +27,30 @@ const entries: Entry[] = [
   },
 ];
 
+const experienceEntries: Entry[] = [
+  {
+    collection: 'experience',
+    slug: 'apple',
+    title: 'Software Engineering Intern',
+    org: 'Apple',
+    tags: ['Python'],
+    startDate: '2025-01-01',
+    endDate: '2025-08-01',
+    status: 'complete',
+    hook: 'Rebuilt packaging test specifications.',
+    content: '',
+  },
+];
+
 describe('Scorecard', () => {
-  it('numbers rows as holes in order', () => {
-    render(<Scorecard collection="projects" entries={entries} />);
+  it('numbers entries in order', () => {
+    render(<Scorecard collection="projects" entries={projectEntries} />);
     expect(screen.getByText('01')).toBeInTheDocument();
     expect(screen.getByText('02')).toBeInTheDocument();
   });
 
   it('links each row to the entry', () => {
-    render(<Scorecard collection="projects" entries={entries} />);
+    render(<Scorecard collection="projects" entries={projectEntries} />);
     expect(screen.getByRole('link', { name: /ASIC Math Accelerator Unit/ })).toHaveAttribute(
       'href',
       '/projects/asic-math-accelerator'
@@ -43,34 +58,40 @@ describe('Scorecard', () => {
   });
 
   it('renders tags as discrete items, not a joined string', () => {
-    render(<Scorecard collection="projects" entries={entries} />);
+    render(<Scorecard collection="projects" entries={projectEntries} />);
     expect(screen.getByText('Python')).toBeInTheDocument();
     expect(screen.getByText('Machine Learning')).toBeInTheDocument();
     expect(screen.queryByText(/Python · Machine Learning/)).not.toBeInTheDocument();
   });
 
-  it('shows the played span and status in accessible text', () => {
-    render(<Scorecard collection="projects" entries={entries} />);
-    expect(screen.getByText('2024')).toBeInTheDocument();
-    expect(screen.getByText('2024–')).toBeInTheDocument();
-    expect(screen.getAllByLabelText('Complete')).toHaveLength(1);
-    expect(screen.getAllByLabelText('In progress')).toHaveLength(1);
+  it('does not show dates or a status indicator for projects', () => {
+    render(<Scorecard collection="projects" entries={projectEntries} />);
+    expect(screen.queryByText('DATES')).not.toBeInTheDocument();
+    expect(screen.queryByText('STATUS')).not.toBeInTheDocument();
+    expect(screen.queryByText(/2024/)).not.toBeInTheDocument();
   });
 
-  it('labels the nine for the collection', () => {
-    render(<Scorecard collection="projects" entries={entries} />);
+  it('shows the company name and a month/year date range for experience', () => {
+    render(<Scorecard collection="experience" entries={experienceEntries} />);
+    expect(screen.getByText('Apple')).toBeInTheDocument();
+    expect(screen.getByText('Jan 2025 – Aug 2025')).toBeInTheDocument();
+  });
+
+  it('labels the selected collection and entry count', () => {
+    render(<Scorecard collection="projects" entries={projectEntries} />);
     const header = screen.getByTestId('scorecard-header');
-    expect(within(header).getByText(/OUT/)).toBeInTheDocument();
+    expect(header).toHaveTextContent('Selected projects');
+    expect(header).toHaveTextContent('2 entries');
   });
 
   it('renders an invitation when the collection is empty', () => {
     render(<Scorecard collection="projects" entries={[]} />);
-    expect(screen.getByText(/No projects on the card yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/No projects yet/i)).toBeInTheDocument();
   });
 
-  it('gives each row link a concise accessible name instead of its full visible content', () => {
-    render(<Scorecard collection="projects" entries={entries} />);
+  it('gives each project row link a concise accessible name instead of its full visible content', () => {
+    render(<Scorecard collection="projects" entries={projectEntries} />);
     const link = screen.getByRole('link', { name: /ASIC Math Accelerator Unit/ });
-    expect(link).toHaveAccessibleName('ASIC Math Accelerator Unit, 2024, complete');
+    expect(link).toHaveAccessibleName('ASIC Math Accelerator Unit');
   });
 });

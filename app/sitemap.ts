@@ -5,7 +5,7 @@ import { getEntries } from '@/lib/content';
 const BASE_URL = 'https://timothypan.dev';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ['', '/projects', '/experience', '/about'].map((route) => ({
+  const staticRoutes = [''].map((route) => ({
     url: `${BASE_URL}${route}`,
     lastModified: new Date(),
   }));

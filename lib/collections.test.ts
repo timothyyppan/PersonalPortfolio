@@ -8,9 +8,9 @@ describe('COLLECTIONS', () => {
     expect(COLLECTIONS.experience.sections).not.toContain('Troubles / Debugging');
   });
 
-  it('assigns projects to the OUT nine and experience to IN', () => {
-    expect(COLLECTIONS.projects.nine).toBe('OUT');
-    expect(COLLECTIONS.experience.nine).toBe('IN');
+  it('defines labels and singular labels for both collections', () => {
+    expect(COLLECTIONS.projects.singular).toBe('Project');
+    expect(COLLECTIONS.experience.singular).toBe('Role');
   });
 });
 
